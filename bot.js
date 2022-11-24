@@ -1,9 +1,11 @@
-const TelegramBot = require('node-telegram-bot-api'),
-    util = require('./modules/util');
-let app_state = require('./modules/app_state');
-let vCard = require('vcard-parser');
+const TelegramBot = require('node-telegram-bot-api');
+const util = require('./modules/util');
+const vCard = require('vcard-parser');
 const http = require('http');
 const url = require('url');
+const path = require("path");
+const fs = require("fs");
+let app_state = require('./modules/app_state');
 
 const conf = util.includeConfig('../app_conf.json');
 
@@ -111,6 +113,35 @@ async function sendMessageToAll(text) {
 
 http.createServer(function (req, res) {
     var url_parsed = url.parse(req.url, true);
+    var uri = url_parsed.pathname;
+    console.log('uri:', uri);
+
+    if (url_parsed.pathname.indexOf('/public/') === 0) {
+        // all static requests
+
+        let filename = path.join(process.cwd(), uri);
+        console.log('filename:', filename);
+        if (!fs.existsSync(filename)) {
+            res.setHeader("Content-Type", "text/plain");
+            res.write("404 Not Found\n");
+            res.end();
+            return;
+        }
+
+        fs.readFile(filename, "binary", function(err, file) {
+            if (err) {
+                res.setHeader("Content-Type", "text/plain");
+                res.write(err + "\n");
+                res.end();
+                return;
+            }
+            console.log('sending file...');
+            res.write(file, "binary");
+            res.end();
+            return;
+        });
+        return;
+    };
 
     if (url_parsed.query.battery_state === 'true') {
         sendMessageToAll('Питание ДТЭК восстановлено')

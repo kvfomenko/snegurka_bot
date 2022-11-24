@@ -1,0 +1,79 @@
+﻿<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+
+<h2>
+<div id="button_outer"><button type="button" id='btn'>Activate sound!</button></div>
+<div id="status"></div>
+<div id="server"></div>
+</h2>
+
+<script>
+    const listenBtn = document.getElementById('btn');
+
+    function sentBatteryStateToServer(text) {
+        const settings = {
+            async: true,
+            //url: 'http://fomenko.tk:3010/?battery_state=' + text,
+			url: '/?battery_state=' + text,
+            method: "GET",
+            timeout: 3000
+        };
+
+        $.ajax(settings)
+            .done(function (response) {
+                $("#server").html('sent to server');
+            })
+            .fail(function (jqXHR, textStatus) {
+                $("#server").html('failed to send ' + textStatus);
+            });
+    }
+
+
+    function TTS(text, lang) {
+        const msg = new SpeechSynthesisUtterance(text);
+        var voices = window.speechSynthesis.getVoices();
+        msg.voice = voices[1];
+        msg.voiceURI = "native";
+        msg.volume = 1;
+        msg.rate = 1;
+        msg.pitch = 0.8;
+        //msg.lang = 'en-US';
+        msg.lang = lang || 'en-US';
+        window.speechSynthesis.speak(msg);
+    }
+
+    listenBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        $("#button_outer").html('Sound activated');
+        //TTS("Sound activated", 'en-GB');
+        TTS("Звук активирован", 'ru-RU');
+    });
+
+    //if (!navigator.getBattery) {
+        //test message to server
+        //sentBatteryStateToServer('true');
+    //}
+
+    navigator.getBattery().then((battery) => {
+        battery.addEventListener('chargingchange', () => {
+            $("#status").html('Charging: ' + battery.charging);
+            var today = new Date();
+            if (battery.charging) {
+                if (today.getHours() >= 9) {
+                    TTS("Питание Д ТЭК восстановлено", 'ru-RU');
+                }
+                sentBatteryStateToServer('true');
+            } else {
+                //TTS("Энергия отсутствует", 'ru-RU');
+                sentBatteryStateToServer('false');
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>
