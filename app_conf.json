@@ -1,0 +1,17 @@
+{
+	"bot": {
+		"token": "",
+		"name": "Snegurka Bot",
+		"polling": {
+			"interval": 500,
+			"autoStart": true,
+			"params": {
+				"timeout": 10
+			}
+		},
+		"url": "https://t.me/Snegurka_Bot"
+	},
+	"app_state_file_path": "./microdb.json",
+  	"help_answer": "Список доступных команд:\n+ добавить желание\n- <номер> удалить желание\n-- удалить весь список\n/list - отобразить мой список желаний\n<отправть контакт> - отобразить список желаний для этого контакта\n/help - помощь",
+	"battery_state_port": 3010
+}
