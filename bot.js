@@ -135,7 +135,7 @@ http.createServer(function (req, res) {
                 res.end();
                 return;
             }
-            console.log('sending file...');
+            res.setHeader("Content-Type", "text/html; charset=utf-8");
             res.write(file, "binary");
             res.end();
             return;
