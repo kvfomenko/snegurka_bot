@@ -83,7 +83,7 @@ async function del_wish_all(msg) {
 async function list(msg) {
     console.log('in list: ' + JSON.stringify(msg));
 
-    if (app_state.state.subscribers[msg.chat.id].phone_number) {
+    if (app_state.state && app_state.state.subscribers[msg.chat.id] && app_state.state.subscribers[msg.chat.id].phone_number) {
         if (!app_state.state.wishes[app_state.state.subscribers[msg.chat.id].phone_number]) {
             app_state.state.wishes[app_state.state.subscribers[msg.chat.id].phone_number] = [];
         }
@@ -117,7 +117,7 @@ http.createServer(function (req, res) {
     console.log('uri:', uri);
 
     if (url_parsed.pathname.indexOf('/public/') === 0) {
-        // all static requests
+        // all static requests here
 
         let filename = path.join(process.cwd(), uri);
         console.log('filename:', filename);
@@ -141,12 +141,14 @@ http.createServer(function (req, res) {
             return;
         });
         return;
-    };
+
+    }
 
     if (url_parsed.query.battery_state === 'true') {
         sendMessageToAll('Питание ДТЭК восстановлено')
             .then(r => null)
             .catch(err => null);
+
     } else if (url_parsed.query.battery_state === 'false') {
         sendMessageToAll('Питание ДТЭК отключено')
             .then(r => null)
@@ -157,7 +159,7 @@ http.createServer(function (req, res) {
     res.setHeader('Access-Control-Allow-Headers', 'User-Agent, Accept-Language, Content-Type, Content-Length, Connection, Date, Set-Cookie');
     res.setHeader('Access-Control-Allow-Methods', 'GET');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    var apiData = {success: true};
+    let apiData = {success: true};
     res.end(JSON.stringify(apiData));
 
 
