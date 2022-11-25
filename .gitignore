@@ -1,1 +1,3 @@
 node_modules
+/app_conf_local.json
+/microdb.json
