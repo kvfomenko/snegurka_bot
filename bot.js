@@ -138,11 +138,13 @@ http.createServer(function (req, res) {
     }
 
     if (url_parsed.query.battery_state === 'true') {
+        console.log('Питание ДТЭК восстановлено');
         sendMessageToAll('Питание ДТЭК восстановлено')
             .then(r => null)
             .catch(err => null);
 
     } else if (url_parsed.query.battery_state === 'false') {
+        console.log('Питание ДТЭК отключено');
         sendMessageToAll('Питание ДТЭК отключено')
             .then(r => null)
             .catch(err => null);
@@ -235,12 +237,10 @@ async function start_bot() {
 }
 
 async function sendMessageToAll(text) {
-    console.log('in sendMessageToAll: ' + JSON.stringify(text));
-
-    await bot.sendMessage('313404677', text);
-    //for (let chat_id in app_state.state.subscribers) {
-    //    await bot.sendMessage(chat_id, text);
-    //}
+    //await bot.sendMessage('313404677', text);
+    for (let chat_id in app_state.state.subscribers) {
+        await bot.sendMessage(chat_id, text);
+    }
 }
 /*
 var prev_level, prev_charging;
