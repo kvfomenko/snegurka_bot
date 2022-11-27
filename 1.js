@@ -19,3 +19,5 @@ isCharging().then(result => {
     console.log(result);
     //=> true
 });
+
+console.log('platform: ' + process.platform);
