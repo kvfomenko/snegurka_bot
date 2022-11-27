@@ -5,7 +5,7 @@ const http = require('http');
 const url = require('url');
 const path = require("path");
 const fs = require("fs");
-const battery = require("battery");
+//const battery = require("battery");
 
 
 let app_state = require('./modules/app_state');
@@ -104,8 +104,6 @@ async function list(msg) {
 
 
 
-
-/*
 http.createServer(function (req, res) {
     var url_parsed = url.parse(req.url, true);
     var uri = url_parsed.pathname;
@@ -160,7 +158,7 @@ http.createServer(function (req, res) {
 
 }).listen(conf.battery_state_port);
 console.log('Battery main-service listening for on http://localhost:' + conf.battery_state_port);
-*/
+
 
 async function start_bot() {
     bot = new TelegramBot(conf.bot.token, {polling: conf.bot.polling});
@@ -244,7 +242,7 @@ async function sendMessageToAll(text) {
     //    await bot.sendMessage(chat_id, text);
     //}
 }
-
+/*
 var prev_level, prev_charging;
 
 async function refresh_battery_state() {
@@ -268,7 +266,7 @@ async function start_battery_monitor(){
     prev_charging = charging;
     prev_level = level;
     setInterval(refresh_battery_state, 3000);
-}
+}*/
 
 async function init() {
     await app_state.init();
@@ -277,7 +275,7 @@ async function init() {
     }
 
     await start_bot();
-    await start_battery_monitor();
+    //await start_battery_monitor();
 
 }
 
