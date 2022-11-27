@@ -5,6 +5,9 @@ const http = require('http');
 const url = require('url');
 const path = require("path");
 const fs = require("fs");
+const battery = require("battery");
+
+
 let app_state = require('./modules/app_state');
 
 const conf = util.includeConfig('../app_conf.json');
@@ -102,15 +105,7 @@ async function list(msg) {
 
 
 
-async function sendMessageToAll(text) {
-    console.log('in sendMessageToAll: ' + JSON.stringify(text));
-
-    //await bot.sendMessage('313404677', text);
-    for (let chat_id in app_state.state.subscribers) {
-        await bot.sendMessage(chat_id, text);
-    }
-}
-
+/*
 http.createServer(function (req, res) {
     var url_parsed = url.parse(req.url, true);
     var uri = url_parsed.pathname;
@@ -165,7 +160,7 @@ http.createServer(function (req, res) {
 
 }).listen(conf.battery_state_port);
 console.log('Battery main-service listening for on http://localhost:' + conf.battery_state_port);
-
+*/
 
 async function start_bot() {
     bot = new TelegramBot(conf.bot.token, {polling: conf.bot.polling});
@@ -241,6 +236,40 @@ async function start_bot() {
 
 }
 
+async function sendMessageToAll(text) {
+    console.log('in sendMessageToAll: ' + JSON.stringify(text));
+
+    await bot.sendMessage('313404677', text);
+    //for (let chat_id in app_state.state.subscribers) {
+    //    await bot.sendMessage(chat_id, text);
+    //}
+}
+
+var prev_level, prev_charging;
+
+async function refresh_battery_state() {
+    const {level,charging} = await battery();
+    console.log('refresh_battery_state ', charging, level)
+    if (prev_charging !== charging) {
+        if (charging) {
+            await sendMessageToAll('Питание ДТЭК восстановлено')
+            console.log('Питание ДТЭК восстановлено')
+        } else {
+            await sendMessageToAll('Питание ДТЭК отключено')
+            console.log('Питание ДТЭК отключено')
+        }
+        prev_charging = charging;
+        prev_level = level;
+    }
+}
+
+async function start_battery_monitor(){
+    const {level,charging} = await battery();
+    prev_charging = charging;
+    prev_level = level;
+    setInterval(refresh_battery_state, 1000);
+}
+
 async function init() {
     await app_state.init();
     if (!app_state.state.wishes) {
@@ -248,7 +277,10 @@ async function init() {
     }
 
     await start_bot();
+    await start_battery_monitor();
+
 }
 
 init();
+
 
