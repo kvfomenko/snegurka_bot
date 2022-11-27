@@ -1,4 +1,5 @@
-﻿const battery = require("battery");
+﻿/*
+const battery = require("battery");
  
 (async () => {
     const { level, charging } = await battery();
@@ -9,3 +10,12 @@
     console.log(charging);
     //=> true
 })();
+*/
+
+
+const isCharging = require('is-charging');
+ 
+isCharging().then(result => {
+    console.log(result);
+    //=> true
+});

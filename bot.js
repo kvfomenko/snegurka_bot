@@ -267,7 +267,7 @@ async function start_battery_monitor(){
     const {level,charging} = await battery();
     prev_charging = charging;
     prev_level = level;
-    setInterval(refresh_battery_state, 1000);
+    setInterval(refresh_battery_state, 3000);
 }
 
 async function init() {
