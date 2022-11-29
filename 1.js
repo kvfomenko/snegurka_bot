@@ -12,12 +12,21 @@ const battery = require("battery");
 })();
 */
 
+const api = require('termux')
+ 
+if (!api.hasTermux) {
+	console.log('termux module not found');
+	process.exit(1)
+}
+ 
+api.vibrate()
+	.duration(1000)
+	.run()
+ 
+api.batteryStatus()
+	.run()
+	.then(function (obj) {
+		console.log(obj);
+	})
 
-const isCharging = require('is-charging');
- 
-isCharging().then(result => {
-    console.log(result);
-    //=> true
-});
 
-console.log('platform: ' + process.platform);

@@ -21,10 +21,10 @@
   "author": "KFomenko",
   "license": "ISC",
   "dependencies": {
-    "battery": "^1.0.1",
     "fs": "0.0.1-security",
     "http": "^0.0.1-security",
     "node-telegram-bot-api": "^0.51.0",
+    "termux": "^1.1.1",
     "url": "^0.11.0",
     "vcard-parser": "^1.0.0"
   }
